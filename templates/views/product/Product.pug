@@ -1,0 +1,74 @@
+
+extends ../../layouts/default
+
+block css
+	link(rel="stylesheet", href="/js/lib/fancybox/jquery.fancybox.css")
+				
+block content
+	.page-header
+		a(href='/Product/create').btn.btn-default.pull-right= user ? 'Thêm Sản Phẩm' : 'Đăng nhập để Thêm Sản Phẩm'
+		h1 Sản Phẩm
+	.ItemList-wrapper
+		if Product.length
+			table.Table.ItemList
+				colgroup
+					col(width="26")
+				thead
+					tr
+						th(colspan="1")
+						th(colspan="1")
+							button.ItemList__sort-button.th-sort.th-sort--desc(title="Sort by Name") Tên hàng hóa
+								span.th-sort__icon
+						th(colspan="1")
+							button.ItemList__sort-button.th-sort.th-sort--desc(title="Sort by Category") Nhóm hàng hóa
+								span.th-sort__icon
+						th(colspan="1")
+							button.ItemList__sort-button.th-sort.th-sort--desc(title="Sort by Number") Giá
+								span.th-sort__icon
+				tbody
+					each product, i in Product
+						tr
+							td.ItemList__col--control.ItemList__col--delete
+								a.ItemList__control.ItemList__control--delete(href="?remove=product&product="+product.id,rel="tooltip", data-placement="left") Xóa
+							td.ItemList__col
+								a.ItemList__value.ItemList__value--text.ItemList__link--interior.ItemList__link--padded.ItemList__value--truncate(href="/Product/"+product.id) #{product.name}
+							td.ItemList__col
+								each categ in category
+									if categ.id == product.category									
+										span() #{categ.name}
+							td.ItemList__col
+								span() #{product.price}
+		else
+			.jumbotron.text-center
+				h3(style="margin-bottom:0;margin-top:0;") Chưa có sản phẩm nào.
+	//- if Product.length
+	//- 	each product, i in Product
+	//- 		h3
+	//- 			| #{product.name} 
+	//- 			small.text-muted= product._.publishedDate.format('Do MMM YYYY')
+			
+	//- 		.row
+	//- 			each image, i in product.images
+	//- 				.col-xs-4.col-sm-3.col-md-2(style="margin-bottom: 30px;")
+	//- 					a(href=image.limit(900,600), title=product.name + ' image ' + (i+1), rel=product.key).product-image
+	//- 						img(src=image.fill(300,300), alt=product.name + ' image ' + (i+1)).img-thumbnail
+		
+	//- else
+	//- 	.jumbotron.text-center
+	//- 		h3(style="margin-bottom:0;margin-top:0;") There are no albums yet.
+
+
+block page-js
+	script(src="/js/lib/fancybox/jquery.fancybox.pack.js")
+	script.
+		jQuery(function($) {
+			$('.product-image').fancybox({
+				prevEffect: 'none',
+				nextEffect: 'none',
+				closeBtn: false,
+				helpers: {
+					titl: {},
+					buttons: {}
+				}
+			});
+		});

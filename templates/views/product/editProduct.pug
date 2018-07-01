@@ -1,0 +1,73 @@
+
+extends ../../layouts/default
+
+block css
+	link(rel="stylesheet", href="/js/lib/fancybox/jquery.fancybox.css")
+				
+block content
+	if enquirySubmitted
+		.jumbotron.text-center
+			h1 Thành công!
+			if user
+				p Đi đến trang danh sách Hàng hóa:
+				a(href='/Product').btn.btn-lg.btn-primary Danh sách Hàng Hóav 
+			else
+				p(style="margin-left: 10vw; margin-right: 10vw;") To see your enquiry, sign in with the username 
+					code demo@keystonejs.com
+					|  and the password 
+					code demo
+					|  then go to the enquiries list.
+				a(href='/keystone/signin').btn.btn-lg.btn-primary Đăng nhập
+	else
+		.page-header
+			a(href='/Product').btn.btn-default.pull-right= 'Xem danh sách hàng hóa'
+			h1 Cập nhật sản phẩm
+		.row
+			.col-sm-10
+				form(method='post').form-horizontal
+					input(type='hidden', name='action', value='product.edit')
+					.form-group(class=validationErrors.name ? 'has-error' : null)
+						label.col-sm-3.text-left.control-label Tên hàng hóa
+						.col-sm-9
+							input(type='text' name='name' value=Product.name required placeholder="").form-control
+					.form-group(class=validationErrors.category ? 'has-error' : null)
+						label.col-sm-3.control-label Nhóm hàng
+						.col-sm-9
+							select(name='category').form-control
+								option(value='' )
+								each categ in category
+									option(value=categ.id selected=Product.category == categ.id)= categ.name
+					.form-group(class=validationErrors.enquiryType ? 'has-error' : null required)
+						label.col-sm-3.control-label Đơn vị tính
+						.col-sm-9
+							select(name='unit').form-control
+								option(value='' )
+								each type in unit
+									option(value=type.value selected=Product.unit === type.value)= type.label
+					//- .form-group(class=validationErrors.enquiryType ? 'has-error' : null required)
+					//- 	label.col-sm-3.control-label Regarding
+					//- 	.col-sm-9
+					//- 		select(name='enquiryType').form-control
+					//- 			option(value='') (required)
+					//- 			each type in enquiryTypes
+					//- 				option(value=type.value selected=Product.enquiryType === type.value)= type.label
+					.form-group
+						label.col-sm-3.control-label Giá bán lẻ
+						.col-sm-9
+							input(type='text' name='price' value=Product.price placeholder='').form-control
+					.form-group
+						label.col-sm-3.control-label Số lượng tối thiểu
+						.col-sm-9
+							input(type='text' name='minNumber' value=Product.minNumber placeholder='').form-control
+					.form-group
+						label.col-sm-3.control-label Số lượng tối đa
+						.col-sm-9
+							input(type='text' name='maxNumber' value=Product.maxNumber placeholder='').form-control
+					//- .form-group(class=validationErrors.message ? 'has-error' : null)
+					//- 	label.col-sm-3.control-label Message
+					//- 	.col-sm-9
+					//- 		textarea(name='message' placeholder='Leave us a message...' rows=4 required).form-control= Product.message
+					.form-group
+						.col-sm-9.col-sm-offset-3
+							//- p.help-block Note: others can see your enquiry in the <a href='/keystone/enquiries'>Admin UI</a>
+							button(type='submit').btn.btn-primary Lưu			

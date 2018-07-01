@@ -1,0 +1,42 @@
+
+extends ../layouts/default
+
+block css
+	link(rel="stylesheet", href="/js/lib/fancybox/jquery.fancybox.css")
+				
+block content
+	.page-header
+		a(href='/keystone/galleries?new').btn.btn-default.pull-right= user ? 'Add Album' : 'Sign in to Add Album'
+		h1 Customer
+
+	if galleries.length
+		each customer, i in galleries
+			h3
+				| #{customer.name} 
+				small.text-muted= customer._.publishedDate.format('Do MMM YYYY')
+			
+			.row
+				each image, i in customer.images
+					.col-xs-4.col-sm-3.col-md-2(style="margin-bottom: 30px;")
+						a(href=image.limit(900,600), title=customer.name + ' image ' + (i+1), rel=customer.key).customer-image
+							img(src=image.fill(300,300), alt=customer.name + ' image ' + (i+1)).img-thumbnail
+		
+	else
+		.jumbotron.text-center
+			h3(style="margin-bottom:0;margin-top:0;") There are no albums yet.
+
+
+block page-js
+	script(src="/js/lib/fancybox/jquery.fancybox.pack.js")
+	script.
+		jQuery(function($) {
+			$('.customer-image').fancybox({
+				prevEffect: 'none',
+				nextEffect: 'none',
+				closeBtn: false,
+				helpers: {
+					titl: {},
+					buttons: {}
+				}
+			});
+		});

@@ -1,0 +1,37 @@
+mixin popup-list-product(product)
+	#mod-popup-list-product.mfp-hide.white-popup
+		.form-group
+			label.col-sm-3.control-label Tên sản phẩm
+			.col-sm-9
+				.search-product
+					input(type="text" name="nameProduct" onkeyup="searchProduct()")#nameProduct.form-control
+					button().btn-primary.btn Tìm kiếm
+		.ItemList-wrapper
+		if Product.length
+			table.Table.ItemList#tableListPro
+				thead
+					tr
+						th(colspan="1")
+							button.ItemList__sort-button.th-sort.th-sort--desc(title="Sort by Name") Tên hàng hóa
+								span.th-sort__icon
+						th(colspan="1")
+							button.ItemList__sort-button.th-sort.th-sort--desc(title="Sort by Category") Nhóm hàng hóa
+								span.th-sort__icon
+						th(colspan="1")
+							button.ItemList__sort-button.th-sort.th-sort--desc(title="Sort by Number") Giá
+								span.th-sort__icon
+				tbody
+					each product, i in Product
+						tr
+							td.ItemList__col.hidden() #{product.id}
+							td.ItemList__col
+								a.ItemList__value.ItemList__value--text.ItemList__link--interior.ItemList__link--padded.ItemList__value--truncate() #{product.name}
+							td.ItemList__col
+								each categ in category
+									if categ.id == product.category									
+										span() #{categ.name}
+							td.ItemList__col
+								span() #{product.price}
+		else
+			.jumbotron.text-center
+				h3(style="margin-bottom:0;margin-top:0;") Chưa có sản phẩm nào.

@@ -1,0 +1,109 @@
+
+extends ../../layouts/default
+
+block css
+	link(rel="stylesheet", href="/js/lib/fancybox/jquery.fancybox.css")
+				
+block content
+	.page-header
+		a(href='/Product/create').btn.btn-default.pull-right= user ? 'Add Album' : 'Sign in to Add Album'
+		h1 Nhóm Sản Phẩm
+	.ItemList-wrapper#mod-group-product
+		table.Table.ItemList
+			colgroup
+				col(width="26")
+			thead
+				tr
+					th(colspan="1")
+					th(colspan="1")
+						button.ItemList__sort-button.th-sort.th-sort--desc(title="Sort by Name") Tên Nhóm Hàng
+							span.th-sort__icon
+			tbody
+				each group, i in GroupProduct
+					tr
+						td.ItemList__col--control.ItemList__col--delete
+							a.ItemList__control.ItemList__control--delete(href="?remove=GroupProduct&group="+group.id,rel="tooltip", data-placement="left") Xóa
+						td.ItemList__col
+							span() #{group.name}
+				tr
+					td()
+						span.add-group-product()
+							img(src="images/Add.ico", style="width: 26px; height: 26px;")
+					td()
+		button(type='submit').btn.btn-primary Lưu	
+	//- if Product.length
+	//- 	each product, i in Product
+	//- 		h3
+	//- 			| #{product.name} 
+	//- 			small.text-muted= product._.publishedDate.format('Do MMM YYYY')
+			
+	//- 		.row
+	//- 			each image, i in product.images
+	//- 				.col-xs-4.col-sm-3.col-md-2(style="margin-bottom: 30px;")
+	//- 					a(href=image.limit(900,600), title=product.name + ' image ' + (i+1), rel=product.key).product-image
+	//- 						img(src=image.fill(300,300), alt=product.name + ' image ' + (i+1)).img-thumbnail
+		
+	//- else
+	//- 	.jumbotron.text-center
+	//- 		h3(style="margin-bottom:0;margin-top:0;") There are no albums yet.
+
+
+block page-js
+	script(src="/js/lib/fancybox/jquery.fancybox.pack.js")
+	script.
+		function addCallback(){
+			$("span.add-group-product").click(function(){
+				//change remove icon
+				console.log("add");
+				var parentsTr = $(this).parents("tr");
+				var parentsTbody = $(this).parents("tbody");	
+				//- parentsTr.find("img")[0].src = "images/Remove.ico";
+				parentsTr.remove();	
+				//Add line
+				parentsTbody.append('<tr><td><span class="remove-group-product"><img src="images/Remove.ico", style="width: 26px; height: 26px;"></span></td><td><input type="text" name="name"/></td></tr>');	
+				parentsTbody.append('<tr><td><span class="add-group-product"><img src="images/Add.ico", style="width: 26px; height: 26px;"></span></td><td></td></tr>');	
+				removeCallback();
+				addCallback();			
+			});
+		}
+		function removeCallback()
+		{
+			$("span.remove-group-product").click(function(){
+				var parentsTr1 = $(this).parents("tr");
+				parentsTr1.remove();				
+			});
+		}
+		function saveGroupProduct()
+		{
+			$('button[type=submit]').on('click',function(){
+				var inputName = $('input');
+				var lengInput = inputName.length;			
+				for(var i = 0; i < lengInput; i++)
+				{
+					var form = document.createElement("form");
+					form.setAttribute('method',"post");
+					form.append(inputName[i]);
+					$.post('/groupProduct', $(form).serialize()).done(function() {
+						location.reload();
+					});			
+				}					
+			});
+		}
+		jQuery(function($) {
+			$('.product-image').fancybox({
+				prevEffect: 'none',
+				nextEffect: 'none',
+				closeBtn: false,
+				helpers: {
+					titl: {},
+					buttons: {}
+				}
+			});			
+			addCallback();
+			saveGroupProduct();				
+			//- $("span.remove-group-product").click(function(){
+			//- 	var parentsTbody = $(this).parents("tbody");
+			//- 	var parentsTr = $(this).parents("tr");
+			//- 	parentsTbody.remove(0);
+			//- });
+		});

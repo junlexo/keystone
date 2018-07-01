@@ -1,0 +1,92 @@
+
+extends ../../layouts/default
+
+block css
+	link(rel="stylesheet", href="/js/lib/fancybox/jquery.fancybox.css")
+				
+block content
+	if enquirySubmitted
+		.jumbotron.text-center
+			h1 Thành công!
+			if user
+				p Đi đến trang danh sách Khách Hàng:
+				a(href='/Customer').btn.btn-lg.btn-primary Danh sách Khách Hàng
+			else
+				p(style="margin-left: 10vw; margin-right: 10vw;") To see your enquiry, sign in with the username 
+					code demo@keystonejs.com
+					|  and the password 
+					code demo
+					|  then go to the enquiries list.
+				a(href='/keystone/signin').btn.btn-lg.btn-primary Đăng nhập
+	
+	else
+		.page-header
+			a(href='/Customer').btn.btn-default.pull-right= 'Xem danh sách Khách Hàng'
+			h1 Thêm Khách Hàng
+		.row
+			.col-sm-10
+				form(method='post').form-horizontal
+					input(type='hidden', name='action', value='customer.create')
+					.form-group(class=validationErrors.name ? 'has-error' : null)
+						label.col-sm-3.text-left.control-label Tên Khách Hàng
+						.col-sm-9
+							input(type='text' name='name' value=formData.name required placeholder="").form-control
+					.form-group(class=validationErrors.target ? 'has-error' : null)
+						label.col-sm-3.text-left.control-label Địa chỉ
+						.col-sm-9
+							input(type='text' name='address' value=formData.address required placeholder="").form-control
+					.form-group(class=validationErrors.phone ? 'has-error' : null)
+						label.col-sm-3.text-left.control-label Số điện thoại
+						.col-sm-9
+							input(type='text' name='phone' value=formData.phone required placeholder="").form-control
+					.form-group(class=validationErrors.target ? 'has-error' : null)
+						label.col-sm-3.text-left.control-label Doanh số
+						.col-sm-9
+							input(type='text' name='target' value=formData.target required placeholder="" onChange="format_curency(this)").form-control
+					.form-group(class=validationErrors.category ? 'has-error' : null)
+						label.col-sm-3.control-label Nhóm Khách Hàng
+						.col-sm-9
+							select(name='category').form-control
+								option(value='') Khác
+								each categ in category
+									option(value=categ.id)= categ.name
+					.form-group(class=validationErrors.describe ? 'has-error' : null)
+						label.col-sm-3.text-left.control-label Mô tả
+						.col-sm-9
+							textarea(type='text' name='describe' value=formData.describe required placeholder="").form-control
+					.form-group(class=validationErrors.enquiryType ? 'has-error' : null required)
+						label.col-sm-3.control-label Loại Khách Hàng
+						.col-sm-9
+							select(name='type').form-control
+								option(value='')
+								each type in unit
+									option(value=type.value selected=formData.type === type.value)= type.label
+					//- .form-group(class=validationErrors.enquiryType ? 'has-error' : null required)
+					//- 	label.col-sm-3.control-label Regarding
+					//- 	.col-sm-9
+					//- 		select(name='enquiryType').form-control
+					//- 			option(value='') (required)
+					//- 			each type in enquiryTypes
+					//- 				option(value=type.value selected=formData.enquiryType === type.value)= type.label		
+					//- .form-group(class=validationErrors.message ? 'has-error' : null)
+					//- 	label.col-sm-3.control-label Message
+					//- 	.col-sm-9
+					//- 		textarea(name='message' placeholder='Leave us a message...' rows=4 required).form-control= formData.message
+					.form-group
+						.col-sm-9.col-sm-offset-3
+							//- p.help-block Note: others can see your enquiry in the <a href='/keystone/enquiries'>Admin UI</a>
+							button(type='submit').btn.btn-primary Thêm			
+block page-js
+	script.
+		function format_curency(a) {
+		  	a.value = a.value.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+		}
+		jQuery(function($) {
+			function format_curency(a) {
+			  	a.value = a.value.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+			}
+			$('button[type="submit"]').on('click', function(){
+				var money = $('input[name=target]').val();				
+				$('input[name=target]').val(money.replace(/\./g, ''));
+			});
+		});	

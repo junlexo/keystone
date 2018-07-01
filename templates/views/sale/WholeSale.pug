@@ -1,0 +1,79 @@
+
+extends ../../layouts/default
+
+block css
+	link(rel="stylesheet", href="/js/lib/fancybox/jquery.fancybox.css")
+				
+block content
+	.page-header
+		a(href='/Wholesale/create').btn.btn-default.pull-right= user ? 'Thêm Hóa Đơn' : 'Đăng nhập để Thêm Hóa Đơn'
+		h1 Hóa Đơn
+	.ItemList-wrapper
+		if Wholesale.length
+			table.Table.ItemList
+				colgroup
+					col(width="26")
+				thead
+					tr
+						th(colspan="1")
+						th(colspan="1")
+							button.ItemList__sort-button.th-sort.th-sort--desc(title="Sort by Code") Mã hóa đơn
+								span.th-sort__icon
+						th(colspan="1")
+							button.ItemList__sort-button.th-sort.th-sort--desc(title="Sort by Name") Người Mua
+								span.th-sort__icon
+						th(colspan="1")
+							button.ItemList__sort-button.th-sort.th-sort--desc(title="Sort by Name") Ngày lập
+								span.th-sort__icon
+						th(colspan="1")
+							button.ItemList__sort-button.th-sort.th-sort--desc(title="Sort by Name") Tổng Tiền Hóa Đơn
+								span.th-sort__icon
+				tbody
+					each wholesale, i in Wholesale
+						tr
+							td.ItemList__col--control.ItemList__col--delete
+								a.ItemList__control.ItemList__control--delete(href="?remove=wholesale&wholesale="+wholesale.id,rel="tooltip", data-placement="left") Xóa
+							td.ItemList__col
+								a.ItemList__value.ItemList__value--text.ItemList__link--interior.ItemList__link--padded.ItemList__value--truncate(href="/Wholesale/"+wholesale.id) #{wholesale.code}
+							td.ItemList__col
+								each customer in Customer
+									if customer.id == wholesale.idCustomer									
+										a.ItemList__value.ItemList__value--text.ItemList__link--interior.ItemList__link--padded.ItemList__value--truncate(href="/Customer/"+wholesale.idCustomer) #{customer.name}							
+							td.ItemList__col
+								span= wholesale._.dateCreate.format('DD/MM/YYYY')
+							td.ItemList__col
+								span() #{wholesale.totalMoney}
+		else
+			.jumbotron.text-center
+				h3(style="margin-bottom:0;margin-top:0;") Chưa có sản phẩm nào.
+	//- if Product.length
+	//- 	each product, i in Product
+	//- 		h3
+	//- 			| #{product.name} 
+	//- 			small.text-muted= product._.publishedDate.format('Do MMM YYYY')
+			
+	//- 		.row
+	//- 			each image, i in product.images
+	//- 				.col-xs-4.col-sm-3.col-md-2(style="margin-bottom: 30px;")
+	//- 					a(href=image.limit(900,600), title=product.name + ' image ' + (i+1), rel=product.key).product-image
+	//- 						img(src=image.fill(300,300), alt=product.name + ' image ' + (i+1)).img-thumbnail
+		
+	//- else
+	//- 	.jumbotron.text-center
+	//- 		h3(style="margin-bottom:0;margin-top:0;") There are no albums yet.
+
+
+block page-js
+	script(src="/js/lib/fancybox/jquery.fancybox.pack.js")
+	script.
+		jQuery(function($) {
+			$('.product-image').fancybox({
+				prevEffect: 'none',
+				nextEffect: 'none',
+				closeBtn: false,
+				helpers: {
+					titl: {},
+					buttons: {}
+				}
+			});
+		});

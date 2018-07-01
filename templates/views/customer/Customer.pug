@@ -1,0 +1,86 @@
+
+extends ../../layouts/default
+
+block css
+	link(rel="stylesheet", href="/js/lib/fancybox/jquery.fancybox.css")
+				
+block content
+	.page-header
+		a(href='/Customer/create').btn.btn-default.pull-right= user ? 'Thêm Khách Hàng' : 'Đăng nhập để thêm Khách Hàng'
+		h1 Khách Hàng
+	.ItemList-wrapper
+		if Customer.length
+			table.Table.ItemList
+				colgroup
+					col(width="26")
+				thead
+					tr
+						th(colspan="1")
+						th(colspan="1")
+							button.ItemList__sort-button.th-sort.th-sort--desc(title="Sort by Name") Tên Khách Hàng
+								span.th-sort__icon
+						th(colspan="1")
+							button.ItemList__sort-button.th-sort.th-sort--desc(title="Sort by Address") Địa chỉ
+								span.th-sort__icon
+						th(colspan="1")
+							button.ItemList__sort-button.th-sort.th-sort--desc(title="Sort by Phone") Số điện thoại
+								span.th-sort__icon
+						th(colspan="1")
+							button.ItemList__sort-button.th-sort.th-sort--desc(title="Sort by Category") Nhóm Khách Hàng
+								span.th-sort__icon
+						th(colspan="1")
+							button.ItemList__sort-button.th-sort.th-sort--desc(title="Sort by Type") Loại Khách Hàng
+								span.th-sort__icon
+				tbody
+					each customer, i in Customer
+						tr
+							td.ItemList__col--control.ItemList__col--delete
+								a.ItemList__control.ItemList__control--delete(href="?remove=customer&customer="+customer.id,rel="tooltip", data-placement="left") Xóa
+							td.ItemList__col
+								a.ItemList__value.ItemList__value--text.ItemList__link--interior.ItemList__link--padded.ItemList__value--truncate(href="/Customer/"+customer.id) #{customer.name}
+							td.ItemList__col
+								span() #{customer.address}
+							td.ItemList__col
+								span() #{customer.phone}
+							td.ItemList__col
+								each categ in category
+									if categ.id == customer.category									
+										span() #{categ.name}
+							td.ItemList__col
+								each type in unit
+									if type.value == customer.type									
+										span() #{type.label}
+		else
+			.jumbotron.text-center
+				h3(style="margin-bottom:0;margin-top:0;") Chưa có Khách hàng nào.
+	//- if Product.length
+	//- 	each product, i in Product
+	//- 		h3
+	//- 			| #{product.name} 
+	//- 			small.text-muted= product._.publishedDate.format('Do MMM YYYY')
+			
+	//- 		.row
+	//- 			each image, i in product.images
+	//- 				.col-xs-4.col-sm-3.col-md-2(style="margin-bottom: 30px;")
+	//- 					a(href=image.limit(900,600), title=product.name + ' image ' + (i+1), rel=product.key).product-image
+	//- 						img(src=image.fill(300,300), alt=product.name + ' image ' + (i+1)).img-thumbnail
+		
+	//- else
+	//- 	.jumbotron.text-center
+	//- 		h3(style="margin-bottom:0;margin-top:0;") There are no albums yet.
+
+
+block page-js
+	script(src="/js/lib/fancybox/jquery.fancybox.pack.js")
+	script.
+		jQuery(function($) {
+			$('.product-image').fancybox({
+				prevEffect: 'none',
+				nextEffect: 'none',
+				closeBtn: false,
+				helpers: {
+					titl: {},
+					buttons: {}
+				}
+			});
+		});
